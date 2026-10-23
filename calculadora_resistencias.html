@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resistencias | Calculadora de combinaciones</title>
+<style>
+:root{--bg:#0b1020;--panel:#141d32;--panel2:#192640;--line:#2b3b59;--text:#eef4ff;--muted:#a9b8d3;--accent:#64e2c2;--accent2:#8ca8ff;--warn:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 10% 0%,#1c2d4a 0,transparent 36%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+main{max-width:1100px;margin:auto;padding:34px 20px 60px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.logo{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#55a7ff);color:#081321;font-size:26px;font-weight:900}
+.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(25px,4vw,38px);margin:4px 0 0;letter-spacing:-1px}
+.subtitle{color:var(--muted);margin:8px 0 25px;line-height:1.55}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start}
+.panel{background:rgba(20,29,50,.94);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 18px 50px #0002}
+h2{font-size:17px;margin:0 0 18px}
+label{display:block;color:var(--muted);font-size:13px;margin:17px 0 8px}
+input,select{width:100%;background:#0d1628;border:1px solid var(--line);border-radius:11px;padding:13px;color:var(--text);font:inherit;outline:none}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #64e2c222}
+.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
+button{width:100%;margin-top:22px;border:0;border-radius:12px;padding:14px 16px;background:linear-gradient(100deg,var(--accent),#7db8ff);color:#081321;font-size:15px;font-weight:850;cursor:pointer;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.small-note{font-size:12px;line-height:1.55;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:15px}
+.results-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
+.pill{font-size:12px;border:1px solid #397b70;color:var(--accent);padding:6px 10px;border-radius:99px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:13px}
+.stat span{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}
+.stat strong{font-size:18px;overflow-wrap:anywhere}
+#message{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 12px}
+.results{display:grid;gap:12px}
+.result{background:#101a2d;border:1px solid var(--line);border-radius:15px;padding:16px}
+.result-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.result h3{margin:0;font-size:15px}
+.value{font-weight:850;color:var(--accent);font-size:18px;white-space:nowrap}
+.meta{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.tag{font-size:11px;padding:5px 8px;background:#202d46;border-radius:7px;color:#c8d7f2}
+.diagram{background:#0b1425;border:1px dashed #354665;border-radius:10px;padding:10px;margin-top:11px;color:#d7e4ff;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.errorbar{height:5px;background:#273752;border-radius:99px;overflow:hidden;margin-top:10px}
+.errorbar div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.empty{padding:30px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;line-height:1.6}
+footer{margin-top:20px;color:#7f91b1;font-size:11px;line-height:1.6}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.panel{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="logo">Ω</div><div><div class="eyebrow">ELABORACIÓN: GARCÍA PLATA MARCO ANTONIO </div><h1>Calculadora de resistencias 3CV3 OSCILACIONES Y ONDAS</h1></div></header>
+<p class="subtitle">ELABORADO POR: GARCÍA PLATA MARCO ANTONIO Encuentra combinaciones comerciales serie-paralelo para aproximarte al valor deseado. Compara el error y revisa cómo conectar los componentes.</p>
+<div class="layout">
+<section class="panel">
+<h2>Parámetros de búsqueda</h2>
+<label for="target">Resistencia deseada</label>
+<input id="target" type="number" min="0.01" step="any" value="470" placeholder="Ej. 470">
+<label for="unit">Unidad</label>
+<select id="unit"><option value="1">Ohmios (Ω)</option><option value="1000">Kiloohmios (kΩ)</option><option value="1000000">Megaohmios (MΩ)</option></select>
+<label for="tolerance">Tolerancia deseada</label>
+<select id="tolerance"><option value="10">10 % · serie E12</option><option value="1">1 % · serie E96</option></select>
+<label for="count">Número máximo de resistencias</label>
+<select id="count"><option value="1">1 resistencia</option><option value="2">Hasta 2 resistencias</option><option value="3" selected>Hasta 3 resistencias</option></select>
+<label for="range">Rango de valores comerciales</label>
+<select id="range"><option value="0">1 Ω a 9.9 MΩ</option><option value="1">10 Ω a 990 kΩ</option></select>
+<button id="calculate">Buscar combinaciones</button>
+<p class="small-note">Se prueban resistencias comerciales E12 (10 %) o E96 (1 %), con conexiones serie, paralelo y redes mixtas de hasta tres componentes.</p>
+</section>
+<section class="panel">
+<div class="results-head"><h2 style="margin:0">Resultados más cercanos</h2><span class="pill" id="status">Listo para buscar</span></div>
+<div class="stats">
+<div class="stat"><span>Valor solicitado</span><strong id="requested">470 Ω</strong></div>
+<div class="stat"><span>Mejor equivalente</span><strong id="best">—</strong></div>
+<div class="stat"><span>Error mínimo</span><strong id="bestError">—</strong></div>
+</div>
+<p id="message">Introduce el valor objetivo y pulsa “Buscar combinaciones”. Se mostrarán las mejores coincidencias dentro de la tolerancia seleccionada.</p>
+<div class="results" id="results"><div class="empty">Tus combinaciones aparecerán aquí.<br>Incluyen valor equivalente, error y esquema de conexión.</div></div>
+<footer>Nota: el porcentaje seleccionado se usa como límite máximo de error respecto al valor solicitado. La tolerancia física de cada resistor también afecta el valor real; este cálculo usa sus valores nominales.</footer>
+</section>
+</div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const fmt = n => {
+    if (!Number.isFinite(n)) return "—";
+    const a = Math.abs(n);
+    if (a >= 1e6) return (n/1e6).toLocaleString("es-MX",{maximumFractionDigits:5})+" MΩ";
+    if (a >= 1e3) return (n/1e3).toLocaleString("es-MX",{maximumFractionDigits:5})+" kΩ";
+    if (a >= 1) return n.toLocaleString("es-MX",{maximumFractionDigits:5})+" Ω";
+    return n.toLocaleString("es-MX",{maximumFractionDigits:6})+" Ω";
+  };
+  const sig = (x, digits) => Number(x.toPrecision(digits));
+  function standardValues(tol, rangeMode) {
+    const base = tol === 10
+      ? [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2]
+      : Array.from({length:96},(_,i)=>Number((Math.round(Math.pow(10,i/96)*100)/100).toFixed(2)))
+          .map((v,i)=>Number((Math.round(Math.pow(10,i/96)*100)/100).toFixed(2)));
+    // E96 comercial: valores normalizados redondeados a tres cifras significativas.
+    const normalized = tol === 10 ? base : Array.from({length:96},(_,i)=>Number((Math.pow(10,i/96)).toPrecision(3)));
+    const values = [];
+    for (let decade = 0; decade <= 6; decade++) {
+      for (const baseValue of normalized) {
+        const v = Number((baseValue * Math.pow(10, decade)).toPrecision(tol === 10 ? 2 : 3));
+        if (v >= (rangeMode ? 10 : 1) && v <= (rangeMode ? 990000 : 9900000)) values.push(v);
+      }
+    }
+    return [...new Set(values)].sort((a,b)=>a-b);
+  }
+  function parallel(a,b){return (a*b)/(a+b);}
+  function nearestIndex(values, x) {
+    if (!Number.isFinite(x) || x <= 0) return -1;
+    let lo=0, hi=values.length-1;
+    while(lo<=hi){const mid=(lo+hi)>>1;if(values[mid]<x)lo=mid+1;else hi=mid-1;}
+    if(lo>=values.length)return values.length-1;
+    if(hi<0)return 0;
+    return Math.abs(values[lo]-x)<Math.abs(values[hi]-x)?lo:hi;
+  }
+  function search(target, tol, maxCount, rangeMode) {
+    const vals=standardValues(tol,rangeMode), candidates=new Map();
+    const add=(value, parts, topology, diagram)=>{
+      if(!Number.isFinite(value)||value<=0||parts.length>maxCount)return;
+      const error=Math.abs(value-target)/target*100;
+      if(error>tol+1e-9)return;
+      const key=topology+"|"+parts.slice().sort((a,b)=>a-b).join(",");
+      const old=candidates.get(key);
+      if(!old||error<old.error)candidates.set(key,{value,error,parts,topology,diagram});
+    };
+    if(maxCount>=1){
+      for(const r of vals)add(r,[r],"Una resistencia",`──[ ${fmt(r)} ]──`);
+    }
+    if(maxCount>=2){
+      for(let i=0;i<vals.length;i++){
+        const a=vals[i];
+        for(let j=i;j<vals.length;j++){
+          const b=vals[j];
+          add(a+b,[a,b],"Dos en serie",`──[ ${fmt(a)} ]──[ ${fmt(b)} ]──`);
+          add(parallel(a,b),[a,b],"Dos en paralelo",` ┌─[ ${fmt(a)} ]─┐\\n─┤             ├─\\n └─[ ${fmt(b)} ]─┘`);
+        }
+      }
+    }
+    if(maxCount>=3){
+      // Para cada par se despeja el tercer resistor en cada topología y se prueba
+      // el valor comercial vecino (y sus dos vecinos para evitar efectos de redondeo).
+      const addDerived=(desired, a,b, topology, calc, diagramFn)=>{
+        if(!Number.isFinite(desired)||desired<=0)return;
+        const k=nearestIndex(vals,desired);
+        for(let z=Math.max(0,k-1);z<=Math.min(vals.length-1,k+1);z++){
+          const c=vals[z], value=calc(a,b,c);
+          add(value,[a,b,c],topology,diagramFn(a,b,c));
+        }
+      };
+      for(let i=0;i<vals.length;i++){
+        const a=vals[i];
+        for(let j=0;j<vals.length;j++){
+          const b=vals[j];
+          // R1 + R2 + R3 = target
+          addDerived(target-a-b,a,b,"Tres en serie",(x,y,z)=>x+y+z,(x,y,z)=>`──[ ${fmt(x)} ]──[ ${fmt(y)} ]──[ ${fmt(z)} ]──`);
+          // R1 || R2 || R3 = target
+          const inv=1/target-1/a-1/b;
+          if(inv>0)addDerived(1/inv,a,b,"Tres en paralelo",(x,y,z)=>1/(1/x+1/y+1/z),(x,y,z)=>` ┌─[ ${fmt(x)} ]─┐\\n ├─[ ${fmt(y)} ]─┤  paralelo\\n └─[ ${fmt(z)} ]─┘`);
+          // (R1 || R2) + R3
+          addDerived(target-parallel(a,b),a,b,"Paralelo y luego serie",(x,y,z)=>parallel(x,y)+z,(x,y,z)=>`[ ${fmt(x)} ]─┐\\n           ├─ serie con [ ${fmt(z)} ]\\n[ ${fmt(y)} ]─┘`);
+          // (R1 + R2) || R3
+          const sum=a+b;
+          if(sum>target)addDerived(target*sum/(sum-target),a,b,"Serie en paralelo con la tercera",(x,y,z)=>parallel(x+y,z),(x,y,z)=>`[ ${fmt(x)} ]─[ ${fmt(y)} ]─┐\\n                       ├─ paralelo\\n[ ${fmt(z)} ]────────────┘`);
+          // R1 || (R2 + R3): despejar R3
+          if(Math.abs(a-target)>1e-12){
+            const c=(target*(a+b)-a*b)/(a-target);
+            addDerived(c,a,b,"Paralelo con rama en serie",(x,y,z)=>parallel(x,y+z),(x,y,z)=>`[ ${fmt(x)} ]──────────┐\\n                    ├─ paralelo\\n[ ${fmt(y)} ]─[ ${fmt(z)} ]─┘`);
+          }
+        }
+      }
+    }
+    return [...candidates.values()].sort((a,b)=>a.error-b.error).slice(0,12);
+  }
+  function run(){
+    const raw=Number($("target").value), unit=Number($("unit").value), tol=Number($("tolerance").value);
+    const maxCount=Number($("count").value), rangeMode=Number($("range").value);
+    if(!Number.isFinite(raw)||raw<=0){$("message").textContent="Escribe un valor de resistencia mayor que cero.";return;}
+    const target=raw*unit;
+    $("requested").textContent=fmt(target);
+    $("status").textContent="Buscando…";
+    $("results").innerHTML="";
+    // El cálculo se ejecuta en el hilo principal y termina en unos segundos en equipos habituales.
+    const found=search(target,tol,maxCount,rangeMode);
+    $("status").textContent=found.length+" opciones";
+    if(!found.length){
+      $("best").textContent="—";$("bestError").textContent="—";
+      $("message").textContent="No se encontraron combinaciones dentro del límite de error. Prueba otro rango comercial o aumenta el número máximo de resistencias.";
+      $("results").innerHTML='<div class="empty">No hay resultados dentro de la tolerancia indicada.</div>';return;
+    }
+    $("best").textContent=fmt(found[0].value);
+    $("bestError").textContent=found[0].error.toFixed(4)+" %";
+    $("message").textContent=`Se muestran hasta ${found.length} combinaciones que cumplen el error máximo de ${tol} %. Ordenadas de menor a mayor error.`;
+    $("results").innerHTML=found.map((r,i)=>`
+      <article class="result">
+        <div class="result-top"><h3>${i===0?"★ Mejor coincidencia · ":""}${r.topology}</h3><div class="value">${fmt(r.value)}</div></div>
+        <div class="meta"><span class="tag">Error: ${r.error.toFixed(4)} %</span><span class="tag">${r.parts.length} componente${r.parts.length===1?"":"s"}</span><span class="tag">${r.error<0.00005?"Prácticamente exacta":"Dentro de tolerancia"}</span></div>
+        <div class="hint">Resistencias comerciales: ${r.parts.map(fmt).join(" + ")}</div>
+        <div class="diagram">${r.diagram}</div>
+        <div class="errorbar"><div style="width:${Math.min(100,r.error/tol*100)}%"></div></div>
+      </article>`).join("");
+  }
+  $("calculate").addEventListener("click",run);
+  $("target").addEventListener("keydown",e=>{if(e.key==="Enter")run();});
+})();
+</script>
+</body>
+</html>
